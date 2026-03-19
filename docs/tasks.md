@@ -20,77 +20,76 @@ PLAN
 - [x] Draft tasks.md (this file)
 - [x] Draft README.md
 - [x] Update AGENTS.md for project
-- [ ] Run /plan-eng-review — lock in architecture with diagrams, edge cases, build-readiness
+- [x] Run /plan-eng-review — architecture locked with diagrams, edge cases, build-readiness
 
 ## Build Tasks
 
 ### Phase 1: Foundation
-- [ ] Project scaffolding (Vite + React 19 + TypeScript + Tailwind 4 + shadcn/ui)
-- [ ] Design tokens and base styles (index.css)
+
+- [ ] Project scaffolding (Vite + React 19 + TypeScript + Tailwind 4 + shadcn/ui + @fontsource/inter)
+- [ ] Design tokens in index.css (CSS custom properties + Tailwind 4 @theme directive)
 - [ ] App shell — sidebar, routing, layout (AppShell, Sidebar, page routes)
-- [ ] Domain types (data/types.ts — all interfaces and type definitions)
+- [ ] Page-level ErrorBoundary component
+- [ ] Domain types (data/types.ts — all interfaces and type definitions, including intelligence output types with { result, explanation } pattern)
 - [ ] Mock data: 5 vendor profiles (data/vendors.ts)
-- [ ] Mock data: ASIN-level products per vendor (data/products.ts)
+- [ ] Mock data: ASIN-level products per vendor (data/products.ts — max 20 per vendor)
 - [ ] Mock data: 8-week trend data (data/trends.ts)
-- [ ] VendorProvider context (context/VendorContext.tsx)
-- [ ] localStorage helpers (lib/storage.ts)
+- [ ] VendorProvider context (context/VendorContext.tsx — selected vendor, derived data, action list state synced to localStorage, auto-selects first vendor)
+- [ ] localStorage helpers (lib/storage.ts — typed read/write wrappers)
 - [ ] Vendor selector with health pulse dots (components/layout/VendorPicker.tsx)
 
-**Definition of done:** App shell renders with sidebar, vendor picker with health indicators, routing between 4 empty pages. Mock data is typed and importable.
+**Definition of done:** App shell renders with sidebar, vendor picker with health indicators, routing between 4 empty pages. First vendor auto-selected. Mock data is typed and importable. Design tokens work as Tailwind utility classes (bg-surface, text-primary, etc.).
 
 ### Phase 2: Intelligence Layer
-- [ ] Diagnostics engine — rule-based issue detection (lib/intelligence/diagnostics.ts)
-- [ ] Confidence scoring system (lib/intelligence/confidence.ts)
-- [ ] Summary generator — templated KPI summaries (lib/intelligence/summaries.ts)
-- [ ] Recommendation engine — grouped action plans (lib/intelligence/recommendations.ts)
-- [ ] Text templates for all AI outputs (lib/intelligence/templates.ts)
 
-**Definition of done:** All intelligence functions are callable with typed inputs/outputs. Given a vendor's data, they produce realistic diagnostics, summaries, and recommendations. No UI needed yet — testable as pure functions.
+- [ ] Diagnostics engine + confidence scoring (lib/intelligence/diagnostics.ts) — rule-based issue detection from KPI patterns, corroborating signal count → High/Moderate confidence. Returns { result: DiagnosticIssue[], explanation }
+- [ ] Summary generator + text templates (lib/intelligence/summaries.ts) — templated plain-English summaries keyed to issue clusters. Returns { result: Summary, explanation }
+- [ ] Recommendation engine (lib/intelligence/recommendations.ts) — maps issues to grouped action plans by owner team. Returns { result: RecommendationGroup[], explanation }
 
-### Phase 3: Shared UI Components
-- [ ] MetricCard component
-- [ ] TrendSparkline component (Recharts)
-- [ ] StatusBadge component
-- [ ] DiagnosticPanel component (with ConfidenceTag)
-- [ ] RecommendationGroup component
-- [ ] GenerationExplainer component ("How this was generated")
-- [ ] SectionHeader component
+**Definition of done:** All 3 intelligence functions are callable with typed inputs/outputs. Given a vendor's data, they produce realistic diagnostics, summaries, and recommendations with explanation metadata. Testable as pure functions.
 
-**Definition of done:** All shared components render correctly with sample props. Consistent with design tokens.
+### Phase 3: Executive Overview Page
 
-### Phase 4: Executive Overview Page
-- [ ] Core scorecard — 8 metrics in MetricCard band
-- [ ] 8-week trend sparklines per metric
+Build the most representative page first — establishes the shared component vocabulary.
+
+- [ ] Core scorecard — 8 metrics in MetricCard band (build MetricCard inline, extract to shared/ when reused)
+- [ ] 8-week trend sparklines per metric (Recharts scoped imports — build TrendSparkline, extract when reused)
+- [ ] StatusBadge for delta indicators (extract to shared/ when reused)
 - [ ] Top risks / top opportunities cards
-- [ ] AI-generated summary panel with GenerationExplainer
-- [ ] Wire up to VendorContext — responds to vendor selection
+- [ ] AI-generated summary panel with GenerationExplainer (build GenerationExplainer, extract to shared/)
+- [ ] SectionHeader component (extract to shared/ when reused)
+- [ ] Wire up to VendorContext — responds to vendor selection via useMemo
 
-**Definition of done:** Selecting a vendor shows its full executive overview with scorecard, trends, risks/opportunities, and AI summary. Data is realistic and the summary reads as credible analysis.
+**Definition of done:** Selecting a vendor shows its full executive overview with scorecard, trends, risks/opportunities, and AI summary. "How this was generated" expands to show intelligence methodology. Data is realistic and the summary reads as credible analysis.
 
-### Phase 5: Catalog & Diagnostics Page
-- [ ] ASIN-level data table (sortable, with inline status badges)
+### Phase 4: Catalog & Diagnostics Page
+
+- [ ] ASIN-level data table (sortable by column headers, max 20 rows — no pagination)
+- [ ] Inline StatusBadge per row for flags
 - [ ] Top movers and weak converters highlighting
 - [ ] Inventory risk flags
 - [ ] Content quality / listing issue flags
 - [ ] Ad efficiency flags
-- [ ] Diagnostic logic panels with confidence indicators
+- [ ] DiagnosticPanel with ConfidenceTag (extract to shared/)
+- [ ] "No issues detected" message for healthy vendors
 - [ ] GenerationExplainer on diagnostic outputs
 
-**Definition of done:** Selecting a vendor shows its product-level diagnostics with sortable table, flags, and diagnostic panels that explain root causes with confidence levels.
+**Definition of done:** Selecting a vendor shows its product-level diagnostics with sortable table, flags, and diagnostic panels that explain root causes with confidence levels. Healthy vendors show "No issues detected" message.
 
-### Phase 6: Growth Plan & QBR Studio Page
-- [ ] Sub-tab structure (Action Plan | QBR & Communication)
-- [ ] Tab A: Grouped recommendations by 4 categories
-- [ ] Tab A: AI-generated action plan
-- [ ] Tab A: Static action list with status badges and due dates
-- [ ] Tab A: localStorage persistence for action states
+### Phase 5: Growth Plan & QBR Studio Page
+
+- [ ] Local tab state (useState) — Action Plan | QBR & Communication (tab persists across vendor changes)
+- [ ] Tab A: Grouped recommendations by 4 categories using RecommendationGroup
+- [ ] Tab A: AI-generated action plan with GenerationExplainer
+- [ ] Tab A: Static action list with status badges and due dates (read/write action state from VendorContext)
 - [ ] Tab B: QBR formatted card layout
 - [ ] Tab B: Drafted vendor follow-up summary
 - [ ] Tab B: GenerationExplainer on AI outputs
 
-**Definition of done:** Growth Plan page has two functional tabs. Action Plan shows grouped recommendations and a persistable action list. QBR tab shows a formatted business review and follow-up draft. All AI outputs have explainability.
+**Definition of done:** Growth Plan page has two functional tabs. Action Plan shows grouped recommendations and a persistable action list. QBR tab shows a formatted business review and follow-up draft. All AI outputs have explainability. Switching vendors refreshes content but keeps current tab.
 
-### Phase 7: About This Project Page
+### Phase 6: About This Project Page
+
 - [ ] Dedicated page with structured content
 - [ ] Sections: workflow context, product focus, AI layer explanation, mocked vs. real, architecture, portfolio context
 - [ ] Clean typography and formatting
@@ -99,10 +98,11 @@ PLAN
 
 ## Polish Tasks
 
-- [ ] Responsive pass (desktop-first, competent at tablet/mobile breakpoints)
-- [ ] Accessibility basics (focus states, ARIA labels, color contrast, keyboard nav)
+- [ ] Responsive pass (desktop-first, competent at tablet/mobile breakpoints — 375px, 768px, 1280px)
+- [ ] Accessibility basics (focus states, ARIA labels, color contrast, keyboard nav for primary flows)
 - [ ] Final data believability review (do mock numbers tell coherent stories?)
 - [ ] Cross-page consistency check (tokens, spacing, component usage)
+- [ ] Console clean check (no errors, no stray logs)
 - [ ] Final README.md pass
 - [ ] Deploy to Vercel
 - [ ] Link from portfolio site (Tony's Site projects page)
@@ -110,8 +110,18 @@ PLAN
 ## Decisions Log
 
 - **Scope cuts applied:** Static action list (no drag-and-drop Kanban), QBR as card layout (no full presentation mode), 8-week trends (not 12-week)
-- **Page 3 structure:** Sub-tabs — "Action Plan" and "QBR & Communication"
-- **Intelligence layer:** Dedicated `/lib/intelligence/` directory with clear API boundary
+- **Page 3 structure:** Sub-tabs — "Action Plan" and "QBR & Communication" (local useState, not URL routes)
+- **Intelligence layer:** 3 files in `/lib/intelligence/` (diagnostics, summaries, recommendations). Confidence scoring merged into diagnostics. Templates merged into summaries.
+- **Intelligence outputs:** All functions return `{ result, explanation }` pairs for GenerationExplainer consumption
 - **Color mode:** Light mode SaaS workspace aesthetic
+- **Design tokens:** CSS custom properties in index.css + Tailwind 4 @theme directive for native utility classes
+- **Font:** @fontsource/inter via npm (self-hosted, no CDN)
+- **State management:** Action list state lifted into VendorContext (synced to localStorage). First vendor auto-selected on load.
+- **Build order:** Page-first extraction — shared components extracted from pages as patterns emerge, not pre-built in isolation
+- **Table constraints:** Max 20 ASINs per vendor, no pagination or virtualization
+- **Empty states:** "No issues detected" message for healthy vendors. No loading/empty states needed (static data).
+- **Error handling:** Page-level ErrorBoundary for dev safety
+- **Memoization:** Intelligence calls wrapped in useMemo keyed on selectedVendorId
+- **Charts:** Recharts with scoped imports only (tree-shaken to ~80-120KB)
 - **Delight features accepted:** Vendor health pulse dots, diagnostic confidence indicators, "How this was generated" explainers
 - **Delight features skipped:** Last reviewed timestamps
