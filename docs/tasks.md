@@ -44,9 +44,9 @@ BUILD
 
 ### Phase 2: Intelligence Layer
 
-- [ ] Diagnostics engine + confidence scoring (lib/intelligence/diagnostics.ts) — rule-based issue detection from KPI patterns, corroborating signal count → High/Moderate confidence. Returns { result: DiagnosticIssue[], explanation }
-- [ ] Summary generator + text templates (lib/intelligence/summaries.ts) — templated plain-English summaries keyed to issue clusters. Returns { result: Summary, explanation }
-- [ ] Recommendation engine (lib/intelligence/recommendations.ts) — maps issues to grouped action plans by owner team. Returns { result: RecommendationGroup[], explanation }
+- [x] Diagnostics engine + confidence scoring (lib/intelligence/diagnostics.ts) — rule-based issue detection from KPI patterns, corroborating signal count → High/Moderate confidence. Returns { result: DiagnosticIssue[], explanation }
+- [x] Summary generator + text templates (lib/intelligence/summaries.ts) — templated plain-English summaries keyed to issue clusters. Returns { result: Summary, explanation }
+- [x] Recommendation engine (lib/intelligence/recommendations.ts) — maps issues to grouped action plans by owner team. Returns { result: RecommendationGroup[], explanation }
 
 **Definition of done:** All 3 intelligence functions are callable with typed inputs/outputs. Given a vendor's data, they produce realistic diagnostics, summaries, and recommendations with explanation metadata. Testable as pure functions.
 
@@ -54,13 +54,13 @@ BUILD
 
 Build the most representative page first — establishes the shared component vocabulary.
 
-- [ ] Core scorecard — 8 metrics in MetricCard band (build MetricCard inline, extract to shared/ when reused)
-- [ ] 8-week trend sparklines per metric (Recharts scoped imports — build TrendSparkline, extract when reused)
-- [ ] StatusBadge for delta indicators (extract to shared/ when reused)
-- [ ] Top risks / top opportunities cards
-- [ ] AI-generated summary panel with GenerationExplainer (build GenerationExplainer, extract to shared/)
-- [ ] SectionHeader component (extract to shared/ when reused)
-- [ ] Wire up to VendorContext — responds to vendor selection via useMemo
+- [x] Core scorecard — 8 metrics in MetricCard band (built inline in Overview.tsx)
+- [x] 8-week trend sparklines per metric (Recharts 3 — LineChart, Line, ResponsiveContainer, YAxis)
+- [x] StatusBadge for delta indicators (built inline in Overview.tsx)
+- [x] Top risks / top opportunities cards with SeverityBadge
+- [x] AI-generated summary panel with GenerationExplainer (built inline in Overview.tsx)
+- [x] SectionHeader component (built inline in Overview.tsx)
+- [x] Wire up to VendorContext — responds to vendor selection via useMemo
 
 **Definition of done:** Selecting a vendor shows its full executive overview with scorecard, trends, risks/opportunities, and AI summary. "How this was generated" expands to show intelligence methodology. Data is realistic and the summary reads as credible analysis.
 
@@ -129,3 +129,7 @@ Build the most representative page first — establishes the shared component vo
 - **Reference blocks:** dashboard-01 and @shadcnblocks/dashboard3 installed as component/pattern references (excluded from tsc build)
 - **Delight features accepted:** Vendor health pulse dots, diagnostic confidence indicators, "How this was generated" explainers
 - **Delight features skipped:** Last reviewed timestamps
+- **Recharts upgrade:** Upgraded from v2 to v3 for React 19 compatibility (v2 had `useRef` hook errors)
+- **Overview component strategy:** All components (MetricCard, TrendSparkline, StatusBadge, SeverityBadge, IssueCard, GenerationExplainer, SectionHeader) built inline in Overview.tsx — will extract to shared/ when reused by other pages
+- **Diagnostics thresholds:** Conversion <6%, In-stock <88%, Return rate >4%, Content quality <75/100, Ad ROAS <3x, Traffic/revenue decline >5%
+- **Risks vs Opportunities split:** Critical+High severity → Top Risks section; Moderate+Low → Opportunities section

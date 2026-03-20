@@ -17,10 +17,10 @@ Update this field as the project advances.
 
 ## What To Do Right Now
 
-Phase 1 (Foundation) is complete. Next step:
+Phases 1–3 are complete. Next step:
 
-1. Begin **Phase 2: Intelligence Layer** — build the 3 intelligence functions (diagnostics, summaries, recommendations) as pure functions.
-2. Then **Phase 3: Executive Overview** — the first real page, which establishes the shared component vocabulary.
+1. Begin **Phase 4: Catalog & Diagnostics Page** — ASIN-level data table, diagnostic panels, flags, confidence tags.
+2. Then **Phase 5: Growth Plan & QBR Studio** — sub-tabs, grouped recommendations, action list, QBR view.
 
 During BUILD:
 - Work from `docs/tasks.md`, one scoped task at a time
