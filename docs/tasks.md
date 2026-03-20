@@ -66,35 +66,36 @@ Build the most representative page first — establishes the shared component vo
 
 ### Phase 4: Catalog & Diagnostics Page
 
-- [ ] ASIN-level data table (sortable by column headers, max 20 rows — no pagination)
-- [ ] Inline StatusBadge per row for flags
-- [ ] Top movers and weak converters highlighting
-- [ ] Inventory risk flags
-- [ ] Content quality / listing issue flags
-- [ ] Ad efficiency flags
-- [ ] DiagnosticPanel with ConfidenceTag (extract to shared/)
-- [ ] "No issues detected" message for healthy vendors
-- [ ] GenerationExplainer on diagnostic outputs
+- [x] ASIN-level data table (sortable by column headers, max 20 rows — no pagination)
+- [x] Inline StatusBadge per row for flags (Low CVR, Low Stock, High Returns, Content, Ad ROAS)
+- [x] Top movers and weak converters highlighting (ProductTag component)
+- [x] Inventory risk flags (color-coded in-stock % cells)
+- [x] Content quality / listing issue flags (color-coded content score cells)
+- [x] Ad efficiency flags (ROAS sub-label per row, color-coded)
+- [x] DiagnosticPanel with ConfidenceTag (built in Diagnostics.tsx)
+- [x] "No issues detected" message for healthy vendors
+- [x] GenerationExplainer on diagnostic outputs
+- [x] Extracted shared components: GenerationExplainer, SeverityBadge, SectionHeader → components/shared/
 
 **Definition of done:** Selecting a vendor shows its product-level diagnostics with sortable table, flags, and diagnostic panels that explain root causes with confidence levels. Healthy vendors show "No issues detected" message.
 
 ### Phase 5: Growth Plan & QBR Studio Page
 
-- [ ] Local tab state (useState) — Action Plan | QBR & Communication (tab persists across vendor changes)
-- [ ] Tab A: Grouped recommendations by 4 categories using RecommendationGroup
-- [ ] Tab A: AI-generated action plan with GenerationExplainer
-- [ ] Tab A: Static action list with status badges and due dates (read/write action state from VendorContext)
-- [ ] Tab B: QBR formatted card layout
-- [ ] Tab B: Drafted vendor follow-up summary
-- [ ] Tab B: GenerationExplainer on AI outputs
+- [x] Local tab state (defaultValue) — Action Plan | QBR & Communication (tab persists across vendor changes)
+- [x] Tab A: Grouped recommendations by 4 categories (Marketing, Merchandising, Supply Chain, Operational Excellence)
+- [x] Tab A: AI-generated action plan with GenerationExplainer
+- [x] Tab A: Static action list with clickable status badges (cycles: Not Started → In Progress → Completed → Overdue), due dates, and progress bar (read/write action state from VendorContext → localStorage)
+- [x] Tab B: QBR formatted card layout with numbered talking points
+- [x] Tab B: Key findings recap + drafted vendor follow-up email
+- [x] Tab B: GenerationExplainer on AI outputs
 
 **Definition of done:** Growth Plan page has two functional tabs. Action Plan shows grouped recommendations and a persistable action list. QBR tab shows a formatted business review and follow-up draft. All AI outputs have explainability. Switching vendors refreshes content but keeps current tab.
 
 ### Phase 6: About This Project Page
 
-- [ ] Dedicated page with structured content
-- [ ] Sections: workflow context, product focus, AI layer explanation, mocked vs. real, architecture, portfolio context
-- [ ] Clean typography and formatting
+- [x] Dedicated page with structured content (6 card sections, max-w-3xl)
+- [x] Sections: workflow context, product focus, AI layer explanation, mocked vs. real, architecture, portfolio context
+- [x] Clean typography and formatting (numbered lists, side-by-side mocked/real comparison, ASCII dependency diagram, portfolio link)
 
 **Definition of done:** About page clearly explains the project's purpose, technical approach, and portfolio value. Reads as a thoughtful embedded case study.
 
