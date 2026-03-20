@@ -6,7 +6,7 @@
 
 ## Current Phase
 
-PLAN
+BUILD
 
 <!-- Update as the project progresses: BRIEF → PLAN → BUILD → POLISH -->
 
@@ -26,17 +26,19 @@ PLAN
 
 ### Phase 1: Foundation
 
-- [ ] Project scaffolding (Vite + React 19 + TypeScript + Tailwind 4 + shadcn/ui + @fontsource/inter)
-- [ ] Design tokens in index.css (CSS custom properties + Tailwind 4 @theme directive)
-- [ ] App shell — sidebar, routing, layout (AppShell, Sidebar, page routes)
-- [ ] Page-level ErrorBoundary component
-- [ ] Domain types (data/types.ts — all interfaces and type definitions, including intelligence output types with { result, explanation } pattern)
-- [ ] Mock data: 5 vendor profiles (data/vendors.ts)
-- [ ] Mock data: ASIN-level products per vendor (data/products.ts — max 20 per vendor)
-- [ ] Mock data: 8-week trend data (data/trends.ts)
-- [ ] VendorProvider context (context/VendorContext.tsx — selected vendor, derived data, action list state synced to localStorage, auto-selects first vendor)
-- [ ] localStorage helpers (lib/storage.ts — typed read/write wrappers)
-- [ ] Vendor selector with health pulse dots (components/layout/VendorPicker.tsx)
+- [x] Project scaffolding (Vite + React 19 + TypeScript + Tailwind 4 + shadcn/ui + @fontsource/inter)
+- [x] Design tokens in index.css (CSS custom properties + Tailwind 4 @theme directive)
+- [x] App shell — shadcn SidebarProvider + SidebarInset layout with collapsible icon mode
+- [x] Page-level ErrorBoundary component
+- [x] Domain types (data/types.ts — all interfaces and type definitions, including intelligence output types with { result, explanation } pattern)
+- [x] Mock data: 5 vendor profiles (data/vendors.ts)
+- [x] Mock data: ASIN-level products per vendor (data/products.ts — max 20 per vendor)
+- [x] Mock data: 8-week trend data (data/trends.ts)
+- [x] VendorProvider context (context/VendorContext.tsx — selected vendor, derived data, action list state synced to localStorage, auto-selects first vendor)
+- [x] localStorage helpers (lib/storage.ts — typed read/write wrappers)
+- [x] Vendor selector with health pulse dots (components/layout/VendorPicker.tsx)
+- [x] Reference blocks installed: dashboard-01, @shadcnblocks/dashboard3
+- [x] shadcn/ui skill installed (.claude/skills/shadcn)
 
 **Definition of done:** App shell renders with sidebar, vendor picker with health indicators, routing between 4 empty pages. First vendor auto-selected. Mock data is typed and importable. Design tokens work as Tailwind utility classes (bg-surface, text-primary, etc.).
 
@@ -123,5 +125,7 @@ Build the most representative page first — establishes the shared component vo
 - **Error handling:** Page-level ErrorBoundary for dev safety
 - **Memoization:** Intelligence calls wrapped in useMemo keyed on selectedVendorId
 - **Charts:** Recharts with scoped imports only (tree-shaken to ~80-120KB)
+- **Sidebar:** Rebuilt with shadcn SidebarProvider system (collapsible icon mode, mobile Sheet drawer, Cmd+B toggle, cookie-persisted state)
+- **Reference blocks:** dashboard-01 and @shadcnblocks/dashboard3 installed as component/pattern references (excluded from tsc build)
 - **Delight features accepted:** Vendor health pulse dots, diagnostic confidence indicators, "How this was generated" explainers
 - **Delight features skipped:** Last reviewed timestamps

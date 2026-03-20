@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2023",
+    "useDefineForClassFields": true,
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "types": ["vite/client"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Path aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["src"],
+  "exclude": [
+    "src/components/data-table.tsx",
+    "src/components/dashboard3.tsx",
+    "src/components/section-cards.tsx",
+    "src/components/chart-area-interactive.tsx",
+    "src/components/app-sidebar.tsx",
+    "src/components/nav-*.tsx",
+    "src/components/nav-main.tsx",
+    "src/components/nav-user.tsx",
+    "src/components/nav-secondary.tsx",
+    "src/components/nav-documents.tsx",
+    "src/components/site-header.tsx",
+    "src/app/**"
+  ]
+}
