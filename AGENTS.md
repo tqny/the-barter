@@ -17,16 +17,15 @@ Update this field as the project advances.
 
 ## What To Do Right Now
 
-Phases 1–3 are complete. Next step:
+All 6 BUILD phases are complete (Foundation, Intelligence Layer, Executive Overview, Catalog & Diagnostics, Growth Plan & QBR Studio, About). Next step:
 
-1. Begin **Phase 4: Catalog & Diagnostics Page** — ASIN-level data table, diagnostic panels, flags, confidence tags.
-2. Then **Phase 5: Growth Plan & QBR Studio** — sub-tabs, grouped recommendations, action list, QBR view.
+1. Begin **Polish Tasks** — responsive pass, accessibility basics, data believability review, cross-page consistency, console clean check, final README pass.
+2. Then **Deploy** — Vercel deployment and portfolio site link.
 
-During BUILD:
-- Work from `docs/tasks.md`, one scoped task at a time
-- Verify each task before moving on
+During POLISH:
+- Work from `docs/tasks.md` Polish Tasks section
+- **Run `/browse`** for visual QA at each breakpoint (375px, 768px, 1280px)
 - **Run `/review`** before creating PRs
-- **Run `/browse`** for visual QA
 - **Run `/ship`** when a feature branch is ready
 
 ---

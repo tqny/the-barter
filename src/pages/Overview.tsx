@@ -15,12 +15,12 @@ import {
   Minus,
   AlertTriangle,
   Lightbulb,
-  ChevronDown,
-  ChevronUp,
   Sparkles,
-  Info,
 } from 'lucide-react'
-import type { MetricKey, DiagnosticIssue, Severity } from '@/data/types'
+import { GenerationExplainer } from '@/components/shared/GenerationExplainer'
+import { SeverityBadge } from '@/components/shared/SeverityBadge'
+import { SectionHeader } from '@/components/shared/SectionHeader'
+import type { MetricKey, DiagnosticIssue } from '@/data/types'
 
 // ─── Metric Config ───────────────────────────────────────────
 
@@ -154,41 +154,6 @@ function MetricCard({ config, trendData }: {
   )
 }
 
-// ─── SectionHeader ───────────────────────────────────────────
-
-function SectionHeader({
-  icon: Icon,
-  title,
-  className = '',
-}: {
-  icon: React.ComponentType<{ className?: string }>
-  title: string
-  className?: string
-}) {
-  return (
-    <div className={`flex items-center gap-2 ${className}`}>
-      <Icon className="size-4 text-muted-foreground" />
-      <h2 className="text-sm font-semibold text-foreground">{title}</h2>
-    </div>
-  )
-}
-
-// ─── Severity Badge ──────────────────────────────────────────
-
-function SeverityBadge({ severity }: { severity: Severity }) {
-  const styles: Record<Severity, string> = {
-    critical: 'bg-status-bad-bg text-status-bad',
-    high: 'bg-status-warn-bg text-status-warn',
-    moderate: 'bg-status-info-bg text-status-info',
-    low: 'bg-surface-raised text-muted-foreground',
-  }
-
-  return (
-    <span className={`inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-medium ${styles[severity]}`}>
-      {severity}
-    </span>
-  )
-}
 
 // ─── Issue Card (for risks/opportunities) ────────────────────
 
@@ -215,32 +180,6 @@ function IssueCard({ issue }: { issue: DiagnosticIssue }) {
   )
 }
 
-// ─── GenerationExplainer ─────────────────────────────────────
-
-function GenerationExplainer({ explanation }: { explanation: string }) {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div className="mt-3 rounded-lg border border-border bg-surface">
-      <button
-        type="button"
-        onClick={() => setOpen(!open)}
-        className="flex w-full items-center gap-2 px-3 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
-      >
-        <Info className="size-3 shrink-0" />
-        <span>How this was generated</span>
-        {open ? <ChevronUp className="ml-auto size-3" /> : <ChevronDown className="ml-auto size-3" />}
-      </button>
-      {open && (
-        <div className="border-t border-border px-3 py-2">
-          <pre className="whitespace-pre-wrap text-xs text-muted-foreground leading-relaxed font-sans">
-            {explanation}
-          </pre>
-        </div>
-      )}
-    </div>
-  )
-}
 
 // ─── Overview Page ───────────────────────────────────────────
 
