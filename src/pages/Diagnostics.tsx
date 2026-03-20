@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useVendor } from '@/context/VendorContext'
 import { runDiagnostics } from '@/lib/intelligence/diagnostics'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -10,6 +10,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from '@/components/ui/collapsible'
 import { GenerationExplainer } from '@/components/shared/GenerationExplainer'
 import { SeverityBadge } from '@/components/shared/SeverityBadge'
 import { SectionHeader } from '@/components/shared/SectionHeader'
@@ -26,8 +31,9 @@ import {
   BarChart3,
   CheckCircle2,
   AlertTriangle,
+  ChevronRight,
 } from 'lucide-react'
-import type { Product, DiagnosticIssue, IssueType, ConfidenceLevel } from '@/data/types'
+import type { Product, DiagnosticIssue, IssueType, ConfidenceLevel, Severity } from '@/data/types'
 
 // ─── Types ──────────────────────────────────────────────────
 
@@ -160,12 +166,52 @@ function ConfidenceTag({ confidence }: { confidence: ConfidenceLevel }) {
   }
   return (
     <span className={`inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-medium ${styles[confidence]}`}>
-      {confidence === 'high' ? 'High confidence' : 'Moderate — verify with vendor'}
+      {confidence === 'high' ? 'High confidence' : 'Moderate — verify'}
     </span>
   )
 }
 
-// ─── Diagnostic Panel ───────────────────────────────────────
+// ─── Diagnostic Summary Strip ───────────────────────────────
+
+const SEVERITY_ORDER: Severity[] = ['critical', 'high', 'moderate', 'low']
+
+const SEVERITY_DOT: Record<Severity, string> = {
+  critical: 'bg-status-bad',
+  high: 'bg-status-warn',
+  moderate: 'bg-primary',
+  low: 'bg-muted-foreground/60',
+}
+
+function DiagnosticSummaryStrip({ issues }: { issues: DiagnosticIssue[] }) {
+  const counts: Record<Severity, number> = { critical: 0, high: 0, moderate: 0, low: 0 }
+  for (const issue of issues) {
+    counts[issue.severity]++
+  }
+
+  const activeSeverities = SEVERITY_ORDER.filter((s) => counts[s] > 0)
+
+  if (activeSeverities.length === 0) return null
+
+  return (
+    <div className="flex items-center gap-4 rounded-lg border border-border bg-card px-4 py-2.5">
+      <span className="text-xs font-medium text-muted-foreground">Issues</span>
+      <div className="flex items-center gap-3">
+        {activeSeverities.map((severity) => (
+          <div key={severity} className="flex items-center gap-1.5">
+            <span className={`size-2 rounded-full ${SEVERITY_DOT[severity]}`} />
+            <span className="text-sm font-semibold text-foreground">{counts[severity]}</span>
+            <span className="text-xs text-muted-foreground capitalize">{severity}</span>
+          </div>
+        ))}
+      </div>
+      <span className="ml-auto text-xs text-muted-foreground">
+        {issues.length} total
+      </span>
+    </div>
+  )
+}
+
+// ─── Category Icons ─────────────────────────────────────────
 
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Revenue: BarChart3,
@@ -177,42 +223,37 @@ const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>
   Traffic: TrendingDown,
 }
 
-function DiagnosticPanel({ issue }: { issue: DiagnosticIssue }) {
+// ─── Collapsible Diagnostic Row ─────────────────────────────
+
+function DiagnosticRow({ issue }: { issue: DiagnosticIssue }) {
   const Icon = CATEGORY_ICONS[issue.category] ?? ShieldAlert
 
   return (
-    <Card size="sm">
-      <CardHeader>
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-start gap-2.5">
-            <Icon className="size-4 text-muted-foreground mt-0.5 shrink-0" />
-            <div>
-              <CardTitle className="text-sm">{issue.title}</CardTitle>
-              <div className="mt-1.5 flex flex-wrap items-center gap-2">
-                <SeverityBadge severity={issue.severity} />
-                <ConfidenceTag confidence={issue.confidence} />
-                <span className="text-xs text-muted-foreground">
-                  {issue.ownerTeam}
-                </span>
-              </div>
-            </div>
-          </div>
-          <span className="text-xs text-muted-foreground shrink-0">
-            {issue.affectedAsins.length} {issue.affectedAsins.length === 1 ? 'ASIN' : 'ASINs'}
-          </span>
+    <Collapsible>
+      <CollapsibleTrigger className="flex w-full items-center gap-3 py-2.5 px-3 rounded-md hover:bg-surface-raised/50 transition-colors text-left group cursor-pointer">
+        <ChevronRight className="size-3.5 text-muted-foreground shrink-0 transition-transform group-data-[panel-open]:rotate-90" />
+        <Icon className="size-4 text-muted-foreground shrink-0" />
+        <SeverityBadge severity={issue.severity} />
+        <span className="text-sm font-medium text-foreground flex-1 truncate">{issue.title}</span>
+        <ConfidenceTag confidence={issue.confidence} />
+        <span className="text-xs text-muted-foreground shrink-0 hidden sm:inline">{issue.ownerTeam}</span>
+        <span className="text-xs text-muted-foreground shrink-0 tabular-nums">
+          {issue.affectedAsins.length} {issue.affectedAsins.length === 1 ? 'ASIN' : 'ASINs'}
+        </span>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="ml-10 mr-3 mb-2 pl-3 border-l-2 border-border">
+          <ul className="space-y-1 py-2">
+            {issue.evidence.map((e, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-muted-foreground/40" />
+                {e}
+              </li>
+            ))}
+          </ul>
         </div>
-      </CardHeader>
-      <CardContent>
-        <ul className="space-y-1">
-          {issue.evidence.map((e, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm text-foreground">
-              <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-muted-foreground/40" />
-              {e}
-            </li>
-          ))}
-        </ul>
-      </CardContent>
-    </Card>
+      </CollapsibleContent>
+    </Collapsible>
   )
 }
 
@@ -269,6 +310,9 @@ export function Diagnostics() {
           <span>{vendorProducts.length} ASINs</span>
         </p>
       </div>
+
+      {/* Diagnostic Summary Strip */}
+      <DiagnosticSummaryStrip issues={issues} />
 
       {/* ASIN Data Table */}
       <Card>
@@ -355,32 +399,36 @@ export function Diagnostics() {
         </CardContent>
       </Card>
 
-      {/* Diagnostic Panels */}
-      <div>
-        <SectionHeader icon={ShieldAlert} title="Diagnostic Analysis" className="mb-3" />
-
-        {hasIssues ? (
-          <div className="space-y-3">
-            {issues.map((issue) => (
-              <DiagnosticPanel key={issue.id} issue={issue} />
-            ))}
+      {/* Diagnostic Analysis — collapsible rows */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <SectionHeader icon={ShieldAlert} title="Diagnostic Analysis" />
+            {hasIssues && (
+              <span className="text-xs text-muted-foreground">{issues.length} issues detected</span>
+            )}
           </div>
-        ) : (
-          <Card size="sm">
-            <CardContent>
-              <div className="flex items-center gap-3 py-2">
-                <CheckCircle2 className="size-5 text-status-good shrink-0" />
-                <div>
-                  <p className="text-sm font-medium text-foreground">No issues detected</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    All monitored KPIs for {selectedVendor.name} are within acceptable thresholds.
-                  </p>
-                </div>
+        </CardHeader>
+        <CardContent>
+          {hasIssues ? (
+            <div className="divide-y divide-border -mx-3">
+              {issues.map((issue) => (
+                <DiagnosticRow key={issue.id} issue={issue} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 py-2">
+              <CheckCircle2 className="size-5 text-status-good shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-foreground">No issues detected</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  All monitored KPIs for {selectedVendor.name} are within acceptable thresholds.
+                </p>
               </div>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Generation Explainer */}
       {diagnostics && (

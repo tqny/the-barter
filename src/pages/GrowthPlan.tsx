@@ -5,9 +5,10 @@ import { generateRecommendations } from '@/lib/intelligence/recommendations'
 import { generateSummaries } from '@/lib/intelligence/summaries'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { Progress } from '@/components/ui/progress'
+import { Separator } from '@/components/ui/separator'
 import { GenerationExplainer } from '@/components/shared/GenerationExplainer'
 import { SeverityBadge } from '@/components/shared/SeverityBadge'
-import { SectionHeader } from '@/components/shared/SectionHeader'
 import {
   ClipboardList,
   Presentation,
@@ -91,9 +92,9 @@ function isOverdue(dateStr: string): boolean {
   return due < now
 }
 
-// ─── Action Item Row ────────────────────────────────────────
+// ─── Compact Action Row ─────────────────────────────────────
 
-function ActionItemRow({
+function ActionRow({
   rec,
   status,
   onStatusChange,
@@ -106,26 +107,19 @@ function ActionItemRow({
   const overdue = isOverdue(rec.dueDate)
 
   return (
-    <div className="flex items-start gap-3 rounded-lg border border-border bg-card p-3">
+    <div className="flex items-center gap-3 py-2.5 px-3 rounded-md hover:bg-surface-raised/50 transition-colors">
+      <ActionStatusBadge
+        status={status}
+        onCycle={() => onStatusChange(nextStatus(status))}
+      />
       <div className="flex-1 min-w-0">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1">
-            <p className="text-sm font-medium text-foreground">{rec.title}</p>
-            <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{rec.description}</p>
-          </div>
-          <SeverityBadge severity={rec.priority} />
-        </div>
-        <div className="mt-2.5 flex flex-wrap items-center gap-3">
-          <ActionStatusBadge
-            status={status}
-            onCycle={() => onStatusChange(nextStatus(status))}
-          />
-          <span className={`text-xs ${overdue ? 'text-status-bad font-medium' : dueSoon ? 'text-status-warn font-medium' : 'text-muted-foreground'}`}>
-            Due {formatDueDate(rec.dueDate)}
-            {overdue && ' (overdue)'}
-          </span>
-        </div>
+        <span className="text-sm font-medium text-foreground">{rec.title}</span>
       </div>
+      <SeverityBadge severity={rec.priority} />
+      <span className={`text-xs shrink-0 tabular-nums ${overdue ? 'text-status-bad font-medium' : dueSoon ? 'text-status-warn font-medium' : 'text-muted-foreground'}`}>
+        {formatDueDate(rec.dueDate)}
+        {overdue && ' ✗'}
+      </span>
     </div>
   )
 }
@@ -147,27 +141,31 @@ function RecommendationGroupSection({
   ).length
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-2.5">
-        <div className="flex items-center gap-2">
-          <Icon className="size-4 text-muted-foreground" />
-          <h3 className="text-sm font-semibold text-foreground">{group.ownerTeam}</h3>
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Icon className="size-4 text-muted-foreground" />
+            <CardTitle className="text-sm">{group.ownerTeam}</CardTitle>
+          </div>
+          <span className="text-xs text-muted-foreground tabular-nums">
+            {completedCount}/{group.recommendations.length}
+          </span>
         </div>
-        <span className="text-xs text-muted-foreground">
-          {completedCount}/{group.recommendations.length} complete
-        </span>
-      </div>
-      <div className="space-y-2">
-        {group.recommendations.map((rec) => (
-          <ActionItemRow
-            key={rec.id}
-            rec={rec}
-            status={actionStatuses[rec.id] ?? 'not-started'}
-            onStatusChange={(status) => onStatusChange(rec.id, status)}
-          />
-        ))}
-      </div>
-    </div>
+      </CardHeader>
+      <CardContent>
+        <div className="divide-y divide-border -mx-3">
+          {group.recommendations.map((rec) => (
+            <ActionRow
+              key={rec.id}
+              rec={rec}
+              status={actionStatuses[rec.id] ?? 'not-started'}
+              onStatusChange={(status) => onStatusChange(rec.id, status)}
+            />
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   )
 }
 
@@ -233,6 +231,7 @@ export function GrowthPlan() {
 
   const allRecs = recommendations.result.flatMap((g) => g.recommendations)
   const totalComplete = allRecs.filter((r) => actionStatuses[r.id] === 'completed').length
+  const progressPercent = allRecs.length > 0 ? Math.round((totalComplete / allRecs.length) * 100) : 0
 
   return (
     <div className="space-y-6">
@@ -245,7 +244,7 @@ export function GrowthPlan() {
         </p>
       </div>
 
-      {/* Tabs — defaultValue keeps tab across vendor switches */}
+      {/* Tabs */}
       <Tabs defaultValue="action-plan">
         <TabsList>
           <TabsTrigger value="action-plan">
@@ -260,28 +259,26 @@ export function GrowthPlan() {
 
         {/* ─── Tab A: Action Plan ─── */}
         <TabsContent value="action-plan">
-          <div className="space-y-6 pt-2">
-            {/* Progress summary */}
+          <div className="space-y-4 pt-2">
+            {/* Progress bar — shadcn Progress */}
             {allRecs.length > 0 && (
-              <div className="flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="size-4 text-status-good" />
-                  <span className="text-sm font-medium text-foreground">
-                    {totalComplete} of {allRecs.length} actions complete
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex items-center gap-1.5 text-sm font-medium">
+                    <CheckCircle2 className="size-3.5 text-status-good" />
+                    Action Progress
+                  </span>
+                  <span className="text-sm text-muted-foreground tabular-nums">
+                    {totalComplete}/{allRecs.length} complete
                   </span>
                 </div>
-                <div className="flex-1 h-2 rounded-full bg-surface-raised overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-status-good transition-all"
-                    style={{ width: `${allRecs.length > 0 ? (totalComplete / allRecs.length) * 100 : 0}%` }}
-                  />
-                </div>
+                <Progress value={progressPercent} />
               </div>
             )}
 
             {/* Grouped recommendations */}
             {recommendations.result.length > 0 ? (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {recommendations.result.map((group) => (
                   <RecommendationGroupSection
                     key={group.ownerTeam}
@@ -299,7 +296,7 @@ export function GrowthPlan() {
                     <div>
                       <p className="text-sm font-medium text-foreground">No action items needed</p>
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        All KPIs for {selectedVendor.name} are within acceptable thresholds. No corrective actions recommended.
+                        All KPIs for {selectedVendor.name} are within acceptable thresholds.
                       </p>
                     </div>
                   </div>
@@ -313,31 +310,37 @@ export function GrowthPlan() {
 
         {/* ─── Tab B: QBR & Communication ─── */}
         <TabsContent value="qbr">
-          <div className="space-y-6 pt-2">
+          <div className="space-y-4 pt-2">
             {/* QBR Talking Points */}
             <QbrCard title="Quarterly Business Review — Talking Points" icon={Presentation}>
-              <ol className="space-y-3">
+              <div className="space-y-0">
                 {summaries.result.qbrTalkingPoints.map((point, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-                      {i + 1}
-                    </span>
-                    <p className="text-sm text-foreground leading-relaxed">{point}</p>
-                  </li>
+                  <div key={i}>
+                    <div className="flex items-start gap-3 py-2.5">
+                      <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary">
+                        {i + 1}
+                      </span>
+                      <p className="text-sm text-foreground leading-relaxed">{point}</p>
+                    </div>
+                    {i < summaries.result.qbrTalkingPoints.length - 1 && <Separator />}
+                  </div>
                 ))}
-              </ol>
+              </div>
             </QbrCard>
 
             {/* Key Findings recap */}
             <QbrCard title="Key Findings" icon={Sparkles}>
-              <ul className="space-y-2">
+              <div className="grid gap-2 sm:grid-cols-2">
                 {summaries.result.keyFindings.map((finding, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-foreground">
+                  <div
+                    key={i}
+                    className="flex items-start gap-2.5 rounded-lg border border-border bg-surface/50 px-3 py-2.5"
+                  >
                     <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
-                    {finding}
-                  </li>
+                    <p className="text-sm text-foreground leading-snug">{finding}</p>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </QbrCard>
 
             {/* Follow-up Draft */}
