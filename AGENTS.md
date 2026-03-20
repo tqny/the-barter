@@ -7,7 +7,7 @@ Part of the portfolio at https://tqny.github.io/Tony-s-Site/
 
 ## Current Phase
 
-**PLAN**
+**BUILD**
 
 Phases progress as: BRIEF → PLAN → BUILD → POLISH
 
@@ -17,10 +17,10 @@ Update this field as the project advances.
 
 ## What To Do Right Now
 
-Planning docs are drafted. Next step:
+Phase 1 (Foundation) is complete. Next step:
 
-1. Run `/plan-eng-review` to lock in architecture with diagrams, edge cases, and build-readiness assessment.
-2. Once architecture is locked, transition to **BUILD** phase and begin from `docs/tasks.md` Phase 1: Foundation.
+1. Begin **Phase 2: Intelligence Layer** — build the 3 intelligence functions (diagnostics, summaries, recommendations) as pure functions.
+2. Then **Phase 3: Executive Overview** — the first real page, which establishes the shared component vocabulary.
 
 During BUILD:
 - Work from `docs/tasks.md`, one scoped task at a time

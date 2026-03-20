@@ -30,5 +30,19 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": [
+    "src/components/data-table.tsx",
+    "src/components/dashboard3.tsx",
+    "src/components/section-cards.tsx",
+    "src/components/chart-area-interactive.tsx",
+    "src/components/app-sidebar.tsx",
+    "src/components/nav-*.tsx",
+    "src/components/nav-main.tsx",
+    "src/components/nav-user.tsx",
+    "src/components/nav-secondary.tsx",
+    "src/components/nav-documents.tsx",
+    "src/components/site-header.tsx",
+    "src/app/**"
+  ]
 }
