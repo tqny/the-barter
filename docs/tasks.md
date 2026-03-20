@@ -99,9 +99,24 @@ Build the most representative page first — establishes the shared component vo
 
 **Definition of done:** About page clearly explains the project's purpose, technical approach, and portfolio value. Reads as a thoughtful embedded case study.
 
+## UI Sophistication Pass (post-BUILD)
+
+- [x] Executive Overview: unified stats band with dividers, rich deltas (+% + absolute + "vs Last Week")
+- [x] Executive Overview: revenue area chart (ChartContainer + Recharts AreaChart) with gradient fill
+- [x] Executive Overview: side widgets — issue distribution segmented bar + revenue-by-category donut chart
+- [x] Executive Overview: compact issue rows for risks/opportunities (replaced wordy IssueCards)
+- [x] Executive Overview: numbered key findings grid (replaced bullet list)
+- [x] Diagnostics: diagnostic summary strip with severity dot counts
+- [x] Diagnostics: collapsible diagnostic rows with expand-for-evidence (replaced stacked cards)
+- [x] Growth Plan: compact single-line action rows (replaced full cards with description paragraphs)
+- [x] Growth Plan: shadcn Progress component for completion bar
+- [x] Growth Plan QBR: separator-divided talking points, 2-column key findings grid
+- [x] Theme: dark mode with green primary (#33cc33), Montserrat + Playfair Display fonts
+- [x] New shadcn components installed: progress.tsx, chart.tsx (ChartContainer)
+
 ## Polish Tasks
 
-- [ ] Responsive pass (desktop-first, competent at tablet/mobile breakpoints — 375px, 768px, 1280px)
+- [ ] Responsive pass (desktop-first, competent at tablet/mobile breakpoints — 375px, 768px, 1280px) — **needs fresh QA after UI redesign**
 - [ ] Accessibility basics (focus states, ARIA labels, color contrast, keyboard nav for primary flows)
 - [ ] Final data believability review (do mock numbers tell coherent stories?)
 - [ ] Cross-page consistency check (tokens, spacing, component usage)
@@ -116,9 +131,9 @@ Build the most representative page first — establishes the shared component vo
 - **Page 3 structure:** Sub-tabs — "Action Plan" and "QBR & Communication" (local useState, not URL routes)
 - **Intelligence layer:** 3 files in `/lib/intelligence/` (diagnostics, summaries, recommendations). Confidence scoring merged into diagnostics. Templates merged into summaries.
 - **Intelligence outputs:** All functions return `{ result, explanation }` pairs for GenerationExplainer consumption
-- **Color mode:** Light mode SaaS workspace aesthetic
+- **Color mode:** Dark mode with green primary (#33cc33), warm neutrals (#1a1d23 background, #2f3436 cards)
 - **Design tokens:** CSS custom properties in index.css + Tailwind 4 @theme directive for native utility classes
-- **Font:** @fontsource/inter via npm (self-hosted, no CDN)
+- **Font:** Montserrat (sans) + Playfair Display (serif) via @fontsource npm (self-hosted, no CDN). Replaced Inter.
 - **State management:** Action list state lifted into VendorContext (synced to localStorage). First vendor auto-selected on load.
 - **Build order:** Page-first extraction — shared components extracted from pages as patterns emerge, not pre-built in isolation
 - **Table constraints:** Max 20 ASINs per vendor, no pagination or virtualization
@@ -134,3 +149,8 @@ Build the most representative page first — establishes the shared component vo
 - **Overview component strategy:** All components (MetricCard, TrendSparkline, StatusBadge, SeverityBadge, IssueCard, GenerationExplainer, SectionHeader) built inline in Overview.tsx — will extract to shared/ when reused by other pages
 - **Diagnostics thresholds:** Conversion <6%, In-stock <88%, Return rate >4%, Content quality <75/100, Ad ROAS <3x, Traffic/revenue decline >5%
 - **Risks vs Opportunities split:** Critical+High severity → Top Risks section; Moderate+Low → Opportunities section
+- **UI sophistication pass:** dashboard3 (@shadcnblocks) used as aesthetic reference. Adopted: unified stats container with dividers, chart + side widgets layout (xl:flex-row), segmented bars, donut charts, compact list rows instead of wordy cards
+- **Overview layout:** Stats band → Chart + Side Widgets row → AI Summary → Risks/Opportunities (dashboard3-inspired)
+- **Diagnostics layout:** Summary strip → Product table → Collapsible diagnostic rows (replaced stacked DiagnosticPanel cards)
+- **Growth Plan layout:** Progress bar → Grouped compact action rows (title + status + priority + date on one line)
+- **shadcn ChartContainer:** Used for revenue area chart and donut chart (provides config-based theming, tooltip styling, responsive container)

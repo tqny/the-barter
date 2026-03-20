@@ -154,30 +154,62 @@ No specific external references provided. Direction is based on:
 
 ## Pass 2 — Component Patterns
 
-> **Status:** To be populated during BUILD phase as components are built and patterns solidify.
+> **Status:** Populated after UI sophistication pass.
+
+### Theme
+
+Switched from light mode (blue primary, Inter font) to dark mode during sophistication pass.
+
+- **Mode:** Dark — `#1a1d23` background, `#2f3436` cards
+- **Primary:** Green `#33cc33` (light accent: `#66d9ef` cyan)
+- **Fonts:** Montserrat (sans, body), Playfair Display (serif, available), Source Code Pro (mono)
+- **Status colors:** Green (#33cc33), amber (#f59e0b), red (#ef4444), blue (#87ceeb) with dark-appropriate backgrounds
+- **Reference:** @shadcnblocks/dashboard3 aesthetic — unified stat containers, chart + side widget layout, segmented bars, donut charts
 
 ### Component Vocabulary
 
-<!-- MetricCard, TrendSparkline, StatusBadge, DiagnosticPanel, etc. -->
-<!-- Document specs as they are built: dimensions, spacing, states. -->
+- **StatsBand** — single bordered container with 2×4 grid, dividers, icon + label + large value + rich delta (`+2.3% ($11.2K) · vs Last Week`)
+- **RevenueTrendChart** — ChartContainer + AreaChart with gradient fill, total header, legend dot
+- **IssueDistributionWidget** — segmented horizontal bar by severity with colored legend
+- **RevenueByCategoryWidget** — donut chart (PieChart) with center total label + category legend with amounts/percentages
+- **IssueRow** — compact scannable row: severity badge + title + owner team + ASIN count
+- **KeyFindingsGrid** — 2-column grid of numbered insight chips
+- **DiagnosticSummaryStrip** — colored dot counts: "3 Critical · 1 High · 1 Moderate"
+- **DiagnosticRow** — collapsible row: chevron + icon + severity + title, expands to show evidence with left-border indent
+- **ActionRow** — compact task row: status badge + title + priority + due date on one line
+- **GenerationExplainer** — collapsible "How this was generated" explainer (shared)
+- **SeverityBadge** — severity-colored badge (shared)
+- **SectionHeader** — icon + title (shared)
+- **Progress** — shadcn progress bar (used in Growth Plan)
 
 ### Spacing and Rhythm
 
-<!-- Document the actual spacing patterns that emerge during build. -->
+- Page sections: `space-y-6`
+- Card internal: `p-4 sm:p-5` or `p-4 sm:p-6` (matches dashboard3)
+- Stats grid: `p-4 sm:p-5` per cell
+- Compact list rows: `py-2.5 px-3` with `divide-y divide-border`
+- Chart heights: `h-[200px] sm:h-[240px]`
+- Side widgets: `xl:w-[380px]` fixed width
 
 ### Responsive Behavior
 
-**Planned breakpoints:**
-- Desktop: >= 1024px (full sidebar + content)
-- Tablet: 768px–1023px (collapsible sidebar or overlay)
-- Mobile: < 768px (sidebar hidden, hamburger menu)
+**Breakpoints:**
+- Desktop: >= 1280px (full sidebar + chart + side widgets side-by-side)
+- Tablet: 768px–1279px (stats 2-col, chart stacks above widgets)
+- Mobile: < 768px (sidebar hidden, single column)
 
 Desktop-first. Mobile needs to be competent, not optimized.
 
 ### State Patterns
 
-<!-- Loading, empty, error states — document during BUILD. -->
+- No loading states (static mock data)
+- Empty states: "No issues detected" / "No action items needed" / "All KPIs within thresholds"
+- Error: Page-level ErrorBoundary
 
 ### Deviations from Pass 1
 
-<!-- Any changes from the original direction, and why. -->
+- **Dark mode:** Replaced light mode SaaS workspace. Decision driven by aesthetic preference during sophistication pass.
+- **Font:** Montserrat replaced Inter. More character, still clean.
+- **Card pattern:** Moved from individual metric cards to unified stats container with dividers (dashboard3 pattern). More cohesive.
+- **Diagnostic panels:** Replaced stacked cards with collapsible rows. Much more scannable.
+- **Action items:** Replaced full bordered cards with description paragraphs with compact single-line task rows.

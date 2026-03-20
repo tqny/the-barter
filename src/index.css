@@ -1,11 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/inter";
+@import "@fontsource-variable/montserrat";
+@import "@fontsource-variable/playfair-display";
 
 @theme inline {
   /* Typography */
-  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-sans: "Montserrat Variable", system-ui, sans-serif;
+  --font-serif: "Playfair Display Variable", serif;
+  --font-mono: "Source Code Pro", monospace;
   --font-heading: var(--font-sans);
 
   /* shadcn color mappings */
@@ -24,6 +27,7 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -70,59 +74,60 @@
 }
 
 :root {
-  /* Base palette — light mode SaaS workspace */
-  --background: #ffffff;
-  --foreground: #111827;
-  --card: #ffffff;
-  --card-foreground: #111827;
-  --popover: #ffffff;
-  --popover-foreground: #111827;
-  --secondary: #f3f4f6;
-  --secondary-foreground: #111827;
-  --muted: #f3f4f6;
-  --muted-foreground: #6b7280;
-  --accent: #f3f4f6;
-  --accent-foreground: #111827;
-  --destructive: #dc2626;
-  --border: #e5e7eb;
-  --input: #e5e7eb;
-  --ring: #2563eb;
-  --radius: 0.375rem;
+  /* Dark theme — green primary */
+  --background: #1a1d23;
+  --foreground: #e5e5e5;
+  --card: #2f3436;
+  --card-foreground: #e5e5e5;
+  --popover: #2f3436;
+  --popover-foreground: #e5e5e5;
+  --secondary: #87ceeb;
+  --secondary-foreground: #000000;
+  --muted: #444444;
+  --muted-foreground: #a3a3a3;
+  --accent: #66d9ef;
+  --accent-foreground: #000000;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #444444;
+  --input: #444444;
+  --ring: #33cc33;
+  --radius: 0.5rem;
 
-  /* Primary — Blue-600 */
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
+  /* Primary — Green */
+  --primary: #33cc33;
+  --primary-foreground: #000000;
 
   /* Surfaces */
-  --surface: #f9fafb;
-  --surface-raised: #f3f4f6;
+  --surface: #2a2d30;
+  --surface-raised: #3a3d40;
 
   /* Semantic status */
-  --status-good: #059669;
-  --status-good-bg: #ecfdf5;
-  --status-warn: #d97706;
-  --status-warn-bg: #fffbeb;
-  --status-bad: #dc2626;
-  --status-bad-bg: #fef2f2;
-  --status-info: #2563eb;
-  --status-info-bg: #eff6ff;
+  --status-good: #33cc33;
+  --status-good-bg: #1a3a1a;
+  --status-warn: #f59e0b;
+  --status-warn-bg: #3a2a10;
+  --status-bad: #ef4444;
+  --status-bad-bg: #3a1a1a;
+  --status-info: #87ceeb;
+  --status-info-bg: #1a2a3a;
 
   /* Charts */
-  --chart-1: #2563eb;
-  --chart-2: #059669;
-  --chart-3: #d97706;
-  --chart-4: #7c3aed;
-  --chart-5: #dc2626;
+  --chart-1: #33cc33;
+  --chart-2: #87ceeb;
+  --chart-3: #66d9ef;
+  --chart-4: #ff99cc;
+  --chart-5: #ffcc00;
 
   /* Sidebar */
-  --sidebar: #f9fafb;
-  --sidebar-foreground: #111827;
-  --sidebar-primary: #2563eb;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #eff6ff;
-  --sidebar-accent-foreground: #111827;
-  --sidebar-border: #e5e7eb;
-  --sidebar-ring: #2563eb;
+  --sidebar: #1a1d23;
+  --sidebar-foreground: #e5e5e5;
+  --sidebar-primary: #33cc33;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #66d9ef;
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: #444444;
+  --sidebar-ring: #33cc33;
 }
 
 @layer base {

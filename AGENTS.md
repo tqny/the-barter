@@ -7,7 +7,7 @@ Part of the portfolio at https://tqny.github.io/Tony-s-Site/
 
 ## Current Phase
 
-**BUILD**
+**POLISH**
 
 Phases progress as: BRIEF → PLAN → BUILD → POLISH
 
@@ -17,9 +17,9 @@ Update this field as the project advances.
 
 ## What To Do Right Now
 
-All 6 BUILD phases are complete (Foundation, Intelligence Layer, Executive Overview, Catalog & Diagnostics, Growth Plan & QBR Studio, About). Next step:
+BUILD is complete. A major UI sophistication pass was applied (dashboard3-inspired layout, dark theme, new typography). Now in POLISH.
 
-1. Begin **Polish Tasks** — responsive pass, accessibility basics, data believability review, cross-page consistency, console clean check, final README pass.
+1. Continue **Polish Tasks** — responsive pass (pages were redesigned, need fresh breakpoint QA), accessibility basics, data believability review, cross-page consistency, console clean check, final README pass.
 2. Then **Deploy** — Vercel deployment and portfolio site link.
 
 During POLISH:
@@ -27,6 +27,13 @@ During POLISH:
 - **Run `/browse`** for visual QA at each breakpoint (375px, 768px, 1280px)
 - **Run `/review`** before creating PRs
 - **Run `/ship`** when a feature branch is ready
+
+### What changed in the UI sophistication pass (this session):
+- **Theme:** Switched to dark mode with green primary (#33cc33), Montserrat font, warm neutrals
+- **Executive Overview:** Unified stats band with dividers + `+2.3% ($11.2K) · vs Last Week` deltas, revenue area chart + side widgets (issue distribution segmented bar, revenue-by-category donut chart), compact issue rows for risks/opportunities, numbered key findings grid
+- **Diagnostics:** Diagnostic summary strip with severity counts, collapsible diagnostic rows (expand for evidence)
+- **Growth Plan:** Compact single-line action rows, shadcn Progress component, separator-divided QBR talking points, 2-column key findings grid
+- **New components:** `progress.tsx` (shadcn), `chart.tsx` (shadcn ChartContainer)
 
 ---
 
