@@ -140,7 +140,7 @@ export function About() {
 
       {/* Architecture */}
       <Section icon={GitBranch} title="Architecture">
-        <div className="rounded-lg border border-border bg-surface p-3 font-mono text-xs leading-relaxed">
+        <div className="rounded-lg border border-border bg-surface p-3 font-mono text-xs leading-relaxed overflow-x-auto">
           <pre className="whitespace-pre text-muted-foreground">{`Pages ──► VendorContext ──► Data Layer (types, vendors, products, trends)
   │                              ▲
   ├──► Intelligence Layer ───────┘

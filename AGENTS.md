@@ -17,23 +17,20 @@ Update this field as the project advances.
 
 ## What To Do Right Now
 
-BUILD is complete. A major UI sophistication pass was applied (dashboard3-inspired layout, dark theme, new typography). Now in POLISH.
+BUILD and POLISH are complete. A major interactivity and animation pass was applied. Now ready for **Deploy**.
 
-1. Continue **Polish Tasks** — responsive pass (pages were redesigned, need fresh breakpoint QA), accessibility basics, data believability review, cross-page consistency, console clean check, final README pass.
-2. Then **Deploy** — Vercel deployment and portfolio site link.
+1. **Deploy** — Vercel deployment and portfolio site link.
 
-During POLISH:
-- Work from `docs/tasks.md` Polish Tasks section
-- **Run `/browse`** for visual QA at each breakpoint (375px, 768px, 1280px)
-- **Run `/review`** before creating PRs
-- **Run `/ship`** when a feature branch is ready
-
-### What changed in the UI sophistication pass (this session):
-- **Theme:** Switched to dark mode with green primary (#33cc33), Montserrat font, warm neutrals
-- **Executive Overview:** Unified stats band with dividers + `+2.3% ($11.2K) · vs Last Week` deltas, revenue area chart + side widgets (issue distribution segmented bar, revenue-by-category donut chart), compact issue rows for risks/opportunities, numbered key findings grid
-- **Diagnostics:** Diagnostic summary strip with severity counts, collapsible diagnostic rows (expand for evidence)
-- **Growth Plan:** Compact single-line action rows, shadcn Progress component, separator-divided QBR talking points, 2-column key findings grid
-- **New components:** `progress.tsx` (shadcn), `chart.tsx` (shadcn ChartContainer)
+### What changed in the interactivity pass (this session):
+- **Polish:** Responsive fixes, accessibility (ARIA, focus rings, landmarks), data alignment, console clean
+- **Stat cards:** Clickable with line-chart dialog (4-week, auto-scaled Y), framer-motion hover/tap spring animations
+- **Revenue chart:** Dual-axis with ROAS dashed line, dots + active dots
+- **Charts interactive:** Donut activeIndex + segment pop-out + center label swap + legend sync; issue distribution hover-linked segments ↔ legend
+- **AI Summary:** Split into two cards (summary left with rainbow-rimmed black text window, findings right with scroll); GenerationExplainer converted to popover
+- **Risks/Opportunities:** List2-style separator rows, clickable with styled dark popovers showing evidence
+- **Visual:** Darker background with depth gradient, consistent blue rims (chart-2 color) on all cards, brighter severity badges with rings
+- **Simulate Week 9:** Slider dialog for 8 metrics, analyzing overlay, ASIN proportional scaling with jitter, full AI re-analysis
+- **New deps:** framer-motion, shadcn dialog/slider/popover/separator
 
 ---
 

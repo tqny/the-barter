@@ -90,11 +90,12 @@ function SortableHead({
 }) {
   const isActive = currentSort === sortKey
   return (
-    <TableHead className={className}>
+    <TableHead className={className} aria-sort={isActive ? (currentDir === 'asc' ? 'ascending' : 'descending') : undefined}>
       <button
         type="button"
         onClick={() => onSort(sortKey)}
-        className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+        aria-label={`Sort by ${label}`}
+        className="inline-flex items-center gap-1 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {label}
         {isActive ? (
@@ -193,9 +194,9 @@ function DiagnosticSummaryStrip({ issues }: { issues: DiagnosticIssue[] }) {
   if (activeSeverities.length === 0) return null
 
   return (
-    <div className="flex items-center gap-4 rounded-lg border border-border bg-card px-4 py-2.5">
+    <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card px-4 py-2.5 sm:gap-4">
       <span className="text-xs font-medium text-muted-foreground">Issues</span>
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
         {activeSeverities.map((severity) => (
           <div key={severity} className="flex items-center gap-1.5">
             <span className={`size-2 rounded-full ${SEVERITY_DOT[severity]}`} />
@@ -230,8 +231,8 @@ function DiagnosticRow({ issue }: { issue: DiagnosticIssue }) {
 
   return (
     <Collapsible>
-      <CollapsibleTrigger className="flex w-full items-center gap-3 py-2.5 px-3 rounded-md hover:bg-surface-raised/50 transition-colors text-left group cursor-pointer">
-        <ChevronRight className="size-3.5 text-muted-foreground shrink-0 transition-transform group-data-[panel-open]:rotate-90" />
+      <CollapsibleTrigger aria-label={`Toggle details for ${issue.title}`} className="flex w-full items-center gap-3 py-2.5 px-3 rounded-md hover:bg-surface-raised/50 transition-colors text-left group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1">
+        <ChevronRight className="size-3.5 text-muted-foreground shrink-0 transition-transform group-data-[state=open]:rotate-90" />
         <Icon className="size-4 text-muted-foreground shrink-0" />
         <SeverityBadge severity={issue.severity} />
         <span className="text-sm font-medium text-foreground flex-1 truncate">{issue.title}</span>
@@ -319,7 +320,7 @@ export function Diagnostics() {
         <CardHeader>
           <SectionHeader icon={BarChart3} title="Product Performance" />
         </CardHeader>
-        <CardContent className="px-0">
+        <CardContent className="px-0 overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>

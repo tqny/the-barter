@@ -47,8 +47,8 @@ function ActionStatusBadge({
     <button
       type="button"
       onClick={onCycle}
-      className={`inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-colors hover:bg-surface-raised ${config.className}`}
-      title="Click to change status"
+      className={`inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-colors hover:bg-surface-raised focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${config.className}`}
+      aria-label={`Status: ${config.label}. Click to change.`}
     >
       <Icon className="size-3.5" />
       {config.label}
