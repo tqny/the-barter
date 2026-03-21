@@ -6,7 +6,7 @@
 
 ## Current Phase
 
-BUILD
+POLISH
 
 <!-- Update as the project progresses: BRIEF → PLAN → BUILD → POLISH -->
 
@@ -116,12 +116,35 @@ Build the most representative page first — establishes the shared component vo
 
 ## Polish Tasks
 
-- [ ] Responsive pass (desktop-first, competent at tablet/mobile breakpoints — 375px, 768px, 1280px) — **needs fresh QA after UI redesign**
-- [ ] Accessibility basics (focus states, ARIA labels, color contrast, keyboard nav for primary flows)
-- [ ] Final data believability review (do mock numbers tell coherent stories?)
-- [ ] Cross-page consistency check (tokens, spacing, component usage)
-- [ ] Console clean check (no errors, no stray logs)
-- [ ] Final README.md pass
+- [x] Responsive pass (desktop-first, competent at tablet/mobile breakpoints — 375px, 768px, 1280px) — mobile padding reduced, table overflow-x-auto, flex-wrap on summary strips, architecture pre overflow handled
+- [x] Accessibility basics (focus states, ARIA labels, color contrast, keyboard nav for primary flows) — main landmark, aria-expanded on explainers, aria-sort on table headers, aria-labels on interactive elements, focus-visible rings on custom buttons, fixed Collapsible chevron data attribute
+- [x] Final data believability review (do mock numbers tell coherent stories?) — vendor narratives coherent, product revenue sums aligned with trend W8 values
+- [x] Cross-page consistency check (tokens, spacing, component usage) — all pages use consistent space-y-6, header pattern, card/badge usage, GenerationExplainer placement
+- [x] Console clean check (no errors, no stray logs) — only console.error in ErrorBoundary (appropriate), TypeScript clean, build clean
+- [x] Final README.md pass
+
+## UI Interactivity & Animation Pass
+
+- [x] Stat cards: clickable with metric detail dialog (line chart, 4-week trend, Y-axis auto-scale)
+- [x] Stat cards: framer-motion spring hover scale (1.03x) + tap press (0.97x)
+- [x] Revenue chart: dual-axis with ROAS dashed line, dots + active dots, Y-axis auto-scale
+- [x] Issue distribution: hover-linked segments ↔ legend (opacity + scale sync)
+- [x] Donut chart: activeIndex with segment pop-out, center label swap, legend hover sync, tooltip
+- [x] All cards: motion hover scale + background darken on hover
+- [x] AI Summary: split into two standalone cards (summary left, findings right, height-synced with scroll)
+- [x] AI Summary: rainbow-rimmed black text window, rainbow pill label with hover glow
+- [x] Key findings: light blue rimmed rows with hover brighten
+- [x] Top Risks / Opportunities: List2-style separator rows with icon blocks, severity-tinted backgrounds
+- [x] Issue rows: clickable with styled popover (dark bg, evidence pills, blue rims)
+- [x] GenerationExplainer: converted from dropdown to clean popover
+- [x] SeverityBadge: brighter with ring accents, bold uppercase
+- [x] Consistent blue rim (border-2, chart-2 color) across all major cards
+- [x] Darker page background with depth gradient
+- [x] Simulate Week 9: slider dialog (8 metrics, ±20%), analyzing overlay, ASIN proportional scaling with jitter, reset capability
+- [x] New dependencies: framer-motion, shadcn dialog, slider, popover, separator
+
+## Remaining
+
 - [ ] Deploy to Vercel
 - [ ] Link from portfolio site (Tony's Site projects page)
 

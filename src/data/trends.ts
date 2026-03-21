@@ -56,7 +56,7 @@ export const vendorTrends: VendorTrends[] = [
   {
     vendorId: 'v4',
     metrics: {
-      orderedRevenue: trend([380000, 386000, 392000, 398000, 405000, 412000, 420000, 485400]),
+      orderedRevenue: trend([380000, 386000, 392000, 398000, 405000, 412000, 420000, 485800]),
       orderedUnits: trend([9200, 9400, 9600, 9800, 10000, 10200, 10400, 11530]),
       traffic: trend([102000, 104000, 106000, 108000, 110000, 112000, 114000, 131600]),
       conversionRate: trend([9.0, 9.0, 9.1, 9.1, 9.1, 9.1, 9.1, 8.8]),

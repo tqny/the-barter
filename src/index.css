@@ -75,7 +75,7 @@
 
 :root {
   /* Dark theme — green primary */
-  --background: #1a1d23;
+  --background: #121417;
   --foreground: #e5e5e5;
   --card: #2f3436;
   --card-foreground: #e5e5e5;
@@ -120,7 +120,7 @@
   --chart-5: #ffcc00;
 
   /* Sidebar */
-  --sidebar: #1a1d23;
+  --sidebar: #0e1013;
   --sidebar-foreground: #e5e5e5;
   --sidebar-primary: #33cc33;
   --sidebar-primary-foreground: #000000;
@@ -136,6 +136,9 @@
   }
   body {
     @apply bg-background text-foreground;
+    background: linear-gradient(145deg, #121417 0%, #0d0f12 35%, #10121a 65%, #121417 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
   }
   html {
     @apply font-sans antialiased;

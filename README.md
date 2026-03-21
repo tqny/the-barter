@@ -37,10 +37,10 @@ The AI layer demonstrates practical instincts for where automation adds real val
 ## Architecture
 
 - **React 19 + TypeScript** — UI framework
-- **Tailwind CSS 4 + shadcn/ui** — Styling and components
-- **Recharts** — Trend visualizations
+- **Tailwind CSS 4 + shadcn/ui** — Styling and component primitives
+- **Recharts** — Charts and data visualization
 - **Vite** — Build tooling
-- **Vercel** — Deployment
+- **Vercel** — Deployment (planned)
 
 No backend. Mock data in TypeScript modules. Intelligence layer is pure functions with clear API boundaries (`/lib/intelligence/`).
 
