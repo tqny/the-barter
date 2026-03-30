@@ -6,6 +6,7 @@ import type {
   Summary,
   IntelligenceResult,
   MetricKey,
+  KeyFinding,
 } from '../../data/types'
 
 // ─── Helpers ─────────────────────────────────────────────────
@@ -96,17 +97,19 @@ function buildKeyFindings(
   products: Product[],
   trends: VendorTrends,
   issues: DiagnosticIssue[],
-): string[] {
-  const findings: string[] = []
+): KeyFinding[] {
+  const findings: KeyFinding[] = []
 
   // Revenue trend
   const revenue = getLatest(trends, 'orderedRevenue')
   const prevRevenue = getPrevious(trends, 'orderedRevenue')
   const revChange = ((revenue - prevRevenue) / prevRevenue) * 100
   if (Math.abs(revChange) >= 2) {
-    findings.push(
-      `Revenue ${revChange > 0 ? 'increased' : 'decreased'} ${formatPct(Math.abs(revChange))} week-over-week to ${formatCurrency(revenue)}`,
-    )
+    findings.push({
+      type: 'revenue-trend',
+      text: `Revenue ${revChange > 0 ? 'increased' : 'decreased'} ${formatPct(Math.abs(revChange))} week-over-week to ${formatCurrency(revenue)}`,
+      vizData: { type: 'revenue-trend', series: trends.metrics.orderedRevenue },
+    })
   }
 
   // Traffic trend
@@ -114,38 +117,52 @@ function buildKeyFindings(
   const prevTraffic = getPrevious(trends, 'traffic')
   const trafficChange = ((traffic - prevTraffic) / prevTraffic) * 100
   if (Math.abs(trafficChange) >= 3) {
-    findings.push(
-      `Traffic ${trafficChange > 0 ? 'grew' : 'declined'} ${formatPct(Math.abs(trafficChange))} WoW (${traffic.toLocaleString()} detail page views)`,
-    )
+    findings.push({
+      type: 'traffic-trend',
+      text: `Traffic ${trafficChange > 0 ? 'grew' : 'declined'} ${formatPct(Math.abs(trafficChange))} WoW (${traffic.toLocaleString()} detail page views)`,
+      vizData: { type: 'traffic-trend', series: trends.metrics.traffic },
+    })
   }
 
   // In-stock health
   const inStock = getLatest(trends, 'inStockRate')
   if (inStock < 90) {
-    findings.push(
-      `In-stock rate at ${formatPct(inStock)} — below the ${formatPct(90)} benchmark, risking lost sales`,
-    )
+    findings.push({
+      type: 'in-stock-health',
+      text: `In-stock rate at ${formatPct(inStock)} — below the ${formatPct(90)} benchmark, risking lost sales`,
+      vizData: { type: 'in-stock-health', series: trends.metrics.inStockRate, benchmark: 90 },
+    })
   }
 
   // Return rate
   const returnRate = getLatest(trends, 'returnRate')
   if (returnRate > 4) {
-    findings.push(
-      `Return rate elevated at ${formatPct(returnRate)} — investigate product quality or listing accuracy`,
-    )
+    findings.push({
+      type: 'return-rate',
+      text: `Return rate elevated at ${formatPct(returnRate)} — investigate product quality or listing accuracy`,
+      vizData: { type: 'return-rate', series: trends.metrics.returnRate, threshold: 4 },
+    })
   }
 
   // Issue-driven findings
   for (const issue of issues.slice(0, 3)) {
     if (issue.evidence.length > 0) {
-      findings.push(issue.evidence[0])
+      findings.push({
+        type: 'issue-evidence',
+        text: issue.evidence[0],
+        vizData: { type: 'issue-evidence', issue },
+      })
     }
   }
 
   // Ensure we have at least 3 findings
   if (findings.length < 3) {
     const convRate = getLatest(trends, 'conversionRate')
-    findings.push(`Conversion rate at ${formatPct(convRate)} across ${products.length} active ASINs`)
+    findings.push({
+      type: 'conversion-fallback',
+      text: `Conversion rate at ${formatPct(convRate)} across ${products.length} active ASINs`,
+      vizData: { type: 'conversion-fallback', series: trends.metrics.conversionRate, productCount: products.length },
+    })
   }
 
   return findings.slice(0, 6)

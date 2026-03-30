@@ -337,7 +337,7 @@ export function GrowthPlan() {
                     className="flex items-start gap-2.5 rounded-lg border border-border bg-surface/50 px-3 py-2.5"
                   >
                     <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
-                    <p className="text-sm text-foreground leading-snug">{finding}</p>
+                    <p className="text-sm text-foreground leading-snug">{finding.text}</p>
                   </div>
                 ))}
               </div>

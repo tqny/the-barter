@@ -21,9 +21,12 @@ import {
   Area,
   LineChart,
   Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
+  ReferenceLine,
   PieChart,
   Pie,
   Cell,
@@ -56,7 +59,7 @@ import { Separator } from '@/components/ui/separator'
 import { Slider } from '@/components/ui/slider'
 import { GenerationExplainer } from '@/components/shared/GenerationExplainer'
 import { SeverityBadge } from '@/components/shared/SeverityBadge'
-import type { MetricKey, DiagnosticIssue, Severity, VendorTrends, Product } from '@/data/types'
+import type { MetricKey, DiagnosticIssue, Severity, VendorTrends, Product, KeyFinding, KeyFindingVizData } from '@/data/types'
 
 // ─── Metric Config ───────────────────────────────────────────
 
@@ -602,7 +605,7 @@ function RevenueByCategoryWidget({ products }: { products: { category: string; o
           {categories.map((item, i) => (
             <div
               key={item.name}
-              className="flex items-center justify-between gap-2 cursor-pointer transition-opacity duration-200 rounded-md px-1 -mx-1 hover:bg-surface-raised/50"
+              className="flex items-center justify-between gap-2 cursor-pointer transition-all duration-200 rounded-md px-1 -mx-1 hover:bg-surface-raised/80 hover:shadow-[0_0_10px_-2px_rgba(255,255,255,0.06)]"
               style={{ opacity: activeIndex !== null && activeIndex !== i ? 0.3 : 1 }}
               onMouseEnter={() => setActiveIndex(i)}
               onMouseLeave={() => setActiveIndex(null)}
@@ -646,9 +649,9 @@ const ISSUE_CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: str
 // ─── Severity Icon Backgrounds ──────────────────────────────
 
 const SEVERITY_ICON_BG: Record<Severity, string> = {
-  critical: 'bg-status-bad/25 ring-1 ring-status-bad/30',
-  high: 'bg-status-warn/25 ring-1 ring-status-warn/30',
-  moderate: 'bg-status-info/25 ring-1 ring-status-info/30',
+  critical: 'bg-status-bad/40 ring-2 ring-status-bad/50',
+  high: 'bg-status-warn/40 ring-2 ring-status-warn/50',
+  moderate: 'bg-status-info/40 ring-2 ring-status-info/50',
   low: 'bg-surface-raised ring-1 ring-border',
 }
 
@@ -660,7 +663,7 @@ function IssueRow({ issue }: { issue: DiagnosticIssue }) {
   return (
     <Popover>
       <PopoverTrigger
-        className="grid w-full items-center gap-3 px-2 py-4 text-left transition-all duration-200 cursor-pointer hover:bg-surface-raised/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:grid-cols-[1fr_auto_auto] sm:gap-4"
+        className="grid w-full items-center gap-3 px-2 py-4 text-left transition-all duration-200 cursor-pointer hover:bg-surface-raised/70 hover:shadow-[0_0_14px_-3px_rgba(255,255,255,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:grid-cols-[1fr_auto_auto] sm:gap-4"
       >
           <div className="flex items-center gap-3">
             <span className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${SEVERITY_ICON_BG[issue.severity]}`}>
@@ -703,6 +706,189 @@ function IssueRow({ issue }: { issue: DiagnosticIssue }) {
           <p className="text-[10px] text-white/30 text-center pt-1">
             {issue.affectedAsins.length} {issue.affectedAsins.length === 1 ? 'ASIN' : 'ASINs'} affected
           </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
+// ─── Key Finding Popover ────────────────────────────────────
+
+const findingChartConfigs: Record<string, ChartConfig> = {
+  'revenue-trend': { metric: { label: 'Revenue', color: 'var(--chart-1)' } },
+  'traffic-trend': { metric: { label: 'Traffic', color: 'var(--chart-2)' } },
+  'in-stock-health': { metric: { label: 'In-Stock %', color: 'var(--status-bad)' } },
+  'return-rate': { metric: { label: 'Return Rate', color: 'var(--status-bad)' } },
+  'conversion-fallback': { metric: { label: 'Conversion', color: 'var(--chart-3)' } },
+}
+
+function FindingViz({ vizData }: { vizData: KeyFindingVizData }) {
+  const config = findingChartConfigs[vizData.type]
+
+  if (vizData.type === 'issue-evidence') {
+    const { issue } = vizData
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <SeverityBadge severity={issue.severity} />
+          <span className="text-[11px] text-white/50 uppercase tracking-widest">{issue.ownerTeam}</span>
+        </div>
+        <div className="space-y-2">
+          <span className="text-[10px] font-bold text-white/40 uppercase tracking-[0.15em]">Evidence</span>
+          {issue.evidence.map((e, i) => (
+            <div key={i} className="rounded-lg bg-white/[0.04] px-3 py-2" style={{ border: '1px solid color-mix(in srgb, var(--chart-2) 25%, transparent)' }}>
+              <span className="text-[12px] text-white/80 leading-snug">{e}</span>
+            </div>
+          ))}
+        </div>
+        <p className="text-[10px] text-white/30 text-center">
+          {issue.affectedAsins.length} {issue.affectedAsins.length === 1 ? 'ASIN' : 'ASINs'} affected
+        </p>
+      </div>
+    )
+  }
+
+  const data = vizData.series.map((d) => ({ week: d.week, metric: d.value }))
+  const values = data.map((d) => d.metric)
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+  const range = max - min || max * 0.1
+  const padding = range * 0.3
+
+  if (vizData.type === 'return-rate') {
+    const yMin = Math.max(0, Math.floor(min - padding))
+    const yMax = Math.ceil(Math.max(max, vizData.threshold) + padding)
+    return (
+      <div className="h-[140px] w-full">
+        <ChartContainer config={config} className="h-full w-full">
+          <BarChart data={data} margin={{ left: 4, right: 4, top: 8, bottom: 0 }}>
+            <CartesianGrid vertical={false} strokeDasharray="3 3" />
+            <XAxis dataKey="week" tickLine={false} axisLine={false} tickMargin={6} tick={{ fontSize: 10 }} />
+            <YAxis tickLine={false} axisLine={false} tickMargin={4} width={36} domain={[yMin, yMax]} tick={{ fontSize: 10 }} tickFormatter={(v) => `${v}%`} />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent formatter={(v) => `${(v as number).toFixed(1)}%`} hideLabel />} />
+            <ReferenceLine y={vizData.threshold} stroke="var(--chart-5)" strokeDasharray="6 3" strokeWidth={1.5} label={{ value: `${vizData.threshold}% threshold`, position: 'insideTopRight', fill: 'var(--chart-5)', fontSize: 9 }} />
+            <Bar dataKey="metric" radius={[3, 3, 0, 0]}>
+              {data.map((entry, i) => (
+                <Cell key={i} fill={entry.metric > vizData.threshold ? 'var(--status-bad)' : 'var(--chart-4)'} fillOpacity={0.8} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ChartContainer>
+      </div>
+    )
+  }
+
+  if (vizData.type === 'in-stock-health') {
+    const yMin = Math.max(0, Math.floor(min - padding - 2))
+    const yMax = 100
+    return (
+      <div className="h-[140px] w-full">
+        <ChartContainer config={config} className="h-full w-full">
+          <AreaChart data={data} margin={{ left: 4, right: 4, top: 8, bottom: 0 }}>
+            <defs>
+              <linearGradient id="instockGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--status-bad)" stopOpacity={0.3} />
+                <stop offset="100%" stopColor="var(--status-bad)" stopOpacity={0.05} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid vertical={false} strokeDasharray="3 3" />
+            <XAxis dataKey="week" tickLine={false} axisLine={false} tickMargin={6} tick={{ fontSize: 10 }} />
+            <YAxis tickLine={false} axisLine={false} tickMargin={4} width={36} domain={[yMin, yMax]} tick={{ fontSize: 10 }} tickFormatter={(v) => `${v}%`} />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent formatter={(v) => `${(v as number).toFixed(1)}%`} hideLabel />} />
+            <ReferenceLine y={vizData.benchmark} stroke="var(--chart-5)" strokeDasharray="6 3" strokeWidth={1.5} label={{ value: `${vizData.benchmark}% target`, position: 'insideTopRight', fill: 'var(--chart-5)', fontSize: 9 }} />
+            <Area dataKey="metric" type="monotone" fill="url(#instockGrad)" stroke="var(--status-bad)" strokeWidth={2} dot={{ fill: 'var(--status-bad)', r: 2.5 }} />
+          </AreaChart>
+        </ChartContainer>
+      </div>
+    )
+  }
+
+  // Revenue trend: AreaChart with gradient
+  if (vizData.type === 'revenue-trend') {
+    const yMin = Math.max(0, Math.floor(min - padding))
+    const yMax = Math.ceil(max + padding)
+    const trending = data[data.length - 1].metric >= data[data.length - 2].metric
+    const color = trending ? 'var(--chart-1)' : 'var(--status-bad)'
+    return (
+      <div className="h-[140px] w-full">
+        <ChartContainer config={config} className="h-full w-full">
+          <AreaChart data={data} margin={{ left: 4, right: 4, top: 8, bottom: 0 }}>
+            <defs>
+              <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={color} stopOpacity={0.3} />
+                <stop offset="100%" stopColor={color} stopOpacity={0.05} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid vertical={false} strokeDasharray="3 3" />
+            <XAxis dataKey="week" tickLine={false} axisLine={false} tickMargin={6} tick={{ fontSize: 10 }} />
+            <YAxis tickLine={false} axisLine={false} tickMargin={4} width={44} domain={[yMin, yMax]} tick={{ fontSize: 10 }} tickFormatter={(v) => v >= 1000 ? `$${(v / 1000).toFixed(0)}K` : `$${v}`} />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent formatter={(v) => `$${(v as number).toLocaleString()}`} hideLabel />} />
+            <Area dataKey="metric" type="monotone" fill="url(#revenueGrad)" stroke={color} strokeWidth={2} dot={{ fill: color, r: 2.5 }} activeDot={{ r: 5 }} />
+          </AreaChart>
+        </ChartContainer>
+      </div>
+    )
+  }
+
+  // Traffic trend & conversion fallback: LineChart
+  const yMin = Math.max(0, Math.floor(min - padding))
+  const yMax = Math.ceil(max + padding)
+  const isPercent = vizData.type === 'conversion-fallback'
+  const chartColor = vizData.type === 'traffic-trend' ? 'var(--chart-2)' : 'var(--chart-3)'
+  return (
+    <div className="h-[140px] w-full">
+      <ChartContainer config={config} className="h-full w-full">
+        <LineChart data={data} margin={{ left: 4, right: 4, top: 8, bottom: 0 }}>
+          <CartesianGrid vertical={false} strokeDasharray="3 3" />
+          <XAxis dataKey="week" tickLine={false} axisLine={false} tickMargin={6} tick={{ fontSize: 10 }} />
+          <YAxis tickLine={false} axisLine={false} tickMargin={4} width={44} domain={[yMin, yMax]} tick={{ fontSize: 10 }} tickFormatter={(v) => isPercent ? `${v}%` : v >= 1000 ? `${(v / 1000).toFixed(0)}K` : `${v}`} />
+          <ChartTooltip cursor={false} content={<ChartTooltipContent formatter={(v) => isPercent ? `${(v as number).toFixed(1)}%` : (v as number).toLocaleString()} hideLabel />} />
+          <Line dataKey="metric" type="monotone" stroke={chartColor} strokeWidth={2} dot={{ fill: chartColor, r: 2.5 }} activeDot={{ r: 5 }} />
+        </LineChart>
+      </ChartContainer>
+      {vizData.type === 'conversion-fallback' && (
+        <p className="text-[10px] text-white/30 text-center mt-1">across {vizData.productCount} active ASINs</p>
+      )}
+    </div>
+  )
+}
+
+const FINDING_TYPE_LABELS: Record<string, string> = {
+  'revenue-trend': 'Revenue Trend (8 Weeks)',
+  'traffic-trend': 'Traffic Trend (8 Weeks)',
+  'in-stock-health': 'In-Stock Rate vs Target',
+  'return-rate': 'Return Rate vs Threshold',
+  'issue-evidence': 'Issue Detail',
+  'conversion-fallback': 'Conversion Trend (8 Weeks)',
+}
+
+function KeyFindingPopover({ finding, index }: { finding: KeyFinding; index: number }) {
+  return (
+    <Popover>
+      <PopoverTrigger
+        className="flex w-full items-start gap-4 rounded-xl bg-surface-raised/60 p-3.5 backdrop-blur-sm transition-all duration-200 hover:bg-surface-raised/90 hover:shadow-[0_0_12px_-2px_rgba(255,255,255,0.08)] cursor-pointer text-left"
+        style={{ border: '1px solid color-mix(in srgb, var(--chart-2) 30%, transparent)' }}
+      >
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 ring-1 ring-primary/20">
+          <span className="text-sm font-semibold text-primary">{index + 1}</span>
+        </div>
+        <p className="text-sm text-foreground leading-relaxed pt-1.5 flex-1">{finding.text}</p>
+        <ArrowRight className="size-3.5 shrink-0 mt-2 text-muted-foreground" />
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-[340px] !rounded-xl p-0 border-0 shadow-2xl shadow-black/40 ring-0"
+        side="top"
+        align="start"
+        sideOffset={8}
+      >
+        <div
+          className="rounded-xl p-4 space-y-3"
+          style={{ backgroundColor: 'color-mix(in srgb, var(--background) 85%, black)', border: '1px solid color-mix(in srgb, var(--chart-2) 35%, transparent)' }}
+        >
+          <span className="text-[10px] font-bold text-white/40 uppercase tracking-[0.15em]">
+            {FINDING_TYPE_LABELS[finding.type]}
+          </span>
+          <FindingViz vizData={finding.vizData} />
         </div>
       </PopoverContent>
     </Popover>
@@ -1071,22 +1257,11 @@ export function Overview() {
               <span className="text-xs font-bold text-muted-foreground uppercase tracking-[0.15em]">Key Findings</span>
               <span className="text-[11px] text-muted-foreground tabular-nums">{summaries.result.keyFindings.length} observations</span>
             </div>
-            <ul className="space-y-2">
+            <div className="space-y-2">
               {summaries.result.keyFindings.map((finding, i) => (
-                <li
-                  key={i}
-                  className="flex items-start gap-4 rounded-xl bg-background/30 p-3.5 backdrop-blur-sm transition-all duration-200 hover:bg-background/50"
-                  style={{ border: '1px solid color-mix(in srgb, var(--chart-2) 30%, transparent)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--chart-2) 60%, transparent)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--chart-2) 30%, transparent)' }}
-                >
-                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 ring-1 ring-primary/20">
-                    <span className="text-sm font-semibold text-primary">{i + 1}</span>
-                  </div>
-                  <p className="text-sm text-foreground leading-relaxed pt-1.5">{finding}</p>
-                </li>
+                <KeyFindingPopover key={i} finding={finding} index={i} />
               ))}
-            </ul>
+            </div>
           </motion.div>
         </div>
       )}
