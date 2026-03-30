@@ -99,9 +99,31 @@ export interface RecommendationGroup {
   recommendations: Recommendation[]
 }
 
+export type FindingType =
+  | 'revenue-trend'
+  | 'traffic-trend'
+  | 'in-stock-health'
+  | 'return-rate'
+  | 'issue-evidence'
+  | 'conversion-fallback'
+
+export type KeyFindingVizData =
+  | { type: 'revenue-trend'; series: WeeklyDataPoint[] }
+  | { type: 'traffic-trend'; series: WeeklyDataPoint[] }
+  | { type: 'in-stock-health'; series: WeeklyDataPoint[]; benchmark: number }
+  | { type: 'return-rate'; series: WeeklyDataPoint[]; threshold: number }
+  | { type: 'issue-evidence'; issue: DiagnosticIssue }
+  | { type: 'conversion-fallback'; series: WeeklyDataPoint[]; productCount: number }
+
+export interface KeyFinding {
+  type: FindingType
+  text: string
+  vizData: KeyFindingVizData
+}
+
 export interface Summary {
   executiveSummary: string
-  keyFindings: string[]
+  keyFindings: KeyFinding[]
   qbrTalkingPoints: string[]
   followUpDraft: string
 }
