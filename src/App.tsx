@@ -8,7 +8,7 @@ import { About } from '@/pages/About'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/the-barter">
       <VendorProvider>
         <Routes>
           <Route element={<AppShell />}>
