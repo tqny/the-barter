@@ -6,6 +6,7 @@ import {
   Layers,
   GitBranch,
   Briefcase,
+  FlaskConical,
 } from 'lucide-react'
 
 // ─── Section Component ──────────────────────────────────────
@@ -56,10 +57,25 @@ export function About() {
           that drive vendor growth.
         </p>
         <p>
-          This cycle — <strong>Review → Diagnose → Prioritize → Communicate → Track Execution</strong> — is
-          the core loop that The Barter simulates. Each page in the app maps to a stage of that workflow,
-          from the executive overview through diagnostics to growth planning and QBR preparation.
+          This cycle — <strong>Review, Diagnose, Prioritize, Communicate, Track Execution</strong> — is
+          the core loop that The Barter simulates. Each page in the app maps to a stage of that workflow:
         </p>
+        <div className="rounded-lg border border-border bg-surface p-3">
+          <ul className="space-y-1.5 text-sm">
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
+              <span><strong>Executive Overview</strong> — Animated scorecard across 8 KPIs, dual-axis revenue and ROAS charting, revenue mix breakdown, AI-generated performance summary, and categorized risk and opportunity detection with drill-down evidence.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
+              <span><strong>Catalog & Diagnostics</strong> — Sortable ASIN-level product table with performance flags, collapsible diagnostic rows with root cause evidence, confidence scoring, and severity-based issue distribution.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
+              <span><strong>Growth Plan & QBR Studio</strong> — Action plans grouped by owner team with progress tracking, clickable status cycling, QBR talking points, and a generated vendor follow-up draft ready for review.</span>
+            </li>
+          </ul>
+        </div>
       </Section>
 
       {/* Product Focus */}
@@ -89,7 +105,7 @@ export function About() {
           <ul className="space-y-1.5 text-sm">
             <li className="flex items-start gap-2">
               <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
-              <span><strong>Diagnostics</strong> — Detects issues across conversion, inventory, returns, content quality, ad efficiency, and traffic/revenue trends. Scores confidence based on corroborating evidence count.</span>
+              <span><strong>Diagnostics</strong> — Detects issues across conversion, inventory, returns, content quality, ad efficiency, and traffic/revenue trends using week-over-week and multi-week analysis. Scores confidence based on corroborating evidence count.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
@@ -97,13 +113,53 @@ export function About() {
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
-              <span><strong>Recommendations</strong> — Maps diagnostic issues to grouped action plans by owner team, with priority levels and due dates scaled to severity.</span>
+              <span><strong>Recommendations</strong> — Maps diagnostic issues to grouped action plans by owner team (Marketing, Merchandising, Supply Chain, Operational Excellence), with priority levels and due dates scaled to severity.</span>
             </li>
           </ul>
         </div>
         <p>
           Every AI output includes a <strong>"How this was generated"</strong> explainer that describes
           the thresholds, patterns, and methodology used — making the system transparent and auditable.
+          The intelligence layer is implemented as pure functions with no UI dependencies, so it can be
+          replaced with live API calls or an LLM pipeline without changing any page components.
+        </p>
+      </Section>
+
+      {/* Interactive Data Exploration */}
+      <Section icon={FlaskConical} title="Interactive Data Exploration">
+        <p>
+          The Barter treats data visualization as an interactive tool, not just a display layer. Every chart, metric,
+          and finding is designed to respond to user interaction and reveal deeper context on demand.
+        </p>
+        <div className="rounded-lg border border-border bg-surface p-3">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Key interactive features</p>
+          <ul className="space-y-1.5 text-sm">
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
+              <span><strong>Week 9 Simulation</strong> — Adjust all 8 vendor-level metrics via sliders, then run the full AI diagnostic pipeline against the hypothetical data. The entire dashboard re-renders with simulated results, showing how the analysis responds to changing conditions.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
+              <span><strong>Clickable key findings</strong> — Each AI-generated finding opens a popover with a contextual chart: area charts for revenue and in-stock trends, line charts for traffic and conversion, bar charts for return rate versus threshold, or structured evidence cards for issue details.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
+              <span><strong>Metric drill-down</strong> — Click any scorecard metric to open a 4-week trend dialog with formatted axes and delta analysis.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
+              <span><strong>Risk and opportunity popovers</strong> — Each flagged issue opens a detailed evidence panel showing the affected ASINs, owner team, confidence level, and the specific data points that triggered the detection.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
+              <span><strong>Hover-linked charts</strong> — Revenue donut segments, severity bars, and category breakdowns highlight and dim in sync, connecting related data across widgets.</span>
+            </li>
+          </ul>
+        </div>
+        <p>
+          The simulation feature is particularly intentional: a CSM preparing for a vendor meeting often
+          needs to explore "what if" scenarios — <em>what happens to the overall risk profile if we improve
+          in-stock rate by 5%?</em> — and this tool lets them do that without a spreadsheet.
         </p>
       </Section>
 
@@ -113,22 +169,22 @@ export function About() {
           <div className="rounded-lg border border-border bg-surface p-3">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Mocked in this version</p>
             <ul className="space-y-1 text-sm text-muted-foreground">
-              <li>• 5 vendor profiles with fictional brands</li>
-              <li>• ASIN-level product data (10–15 per vendor)</li>
-              <li>• 8-week trend data per metric</li>
-              <li>• Static TypeScript modules (no API calls)</li>
-              <li>• localStorage for action state persistence</li>
+              <li>5 vendor profiles with fictional brands</li>
+              <li>ASIN-level product data (10-15 per vendor)</li>
+              <li>8-week trend data per metric</li>
+              <li>Static TypeScript modules (no API calls)</li>
+              <li>localStorage for action state persistence</li>
             </ul>
           </div>
           <div className="rounded-lg border border-border bg-surface p-3">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">In a production version</p>
             <ul className="space-y-1 text-sm text-muted-foreground">
-              <li>• Live marketplace API integrations</li>
-              <li>• Database-backed vendor and product data</li>
-              <li>• Real-time KPI ingestion and alerting</li>
-              <li>• LLM-powered summary generation</li>
-              <li>• Multi-user auth with role-based access</li>
-              <li>• Email integration for vendor follow-ups</li>
+              <li>Live marketplace API integrations</li>
+              <li>Database-backed vendor and product data</li>
+              <li>Real-time KPI ingestion and alerting</li>
+              <li>LLM-powered summary generation</li>
+              <li>Multi-user auth with role-based access</li>
+              <li>Email integration for vendor follow-ups</li>
             </ul>
           </div>
         </div>
@@ -153,7 +209,7 @@ export function About() {
           <div>
             <p className="text-xs font-semibold text-muted-foreground mb-1">Stack</p>
             <p className="text-sm text-muted-foreground">
-              React 19 · TypeScript · Tailwind CSS 4 · shadcn/ui · Recharts · Vite · Vercel
+              React 19 · TypeScript · Tailwind CSS 4 · shadcn/ui · Recharts · Framer Motion · Vite · GitHub Pages
             </p>
           </div>
           <div>
@@ -178,20 +234,20 @@ export function About() {
           >
             Tony Mikityuk's portfolio
           </a>
-          . It demonstrates three things a hiring manager should take away:
+          . It demonstrates three things:
         </p>
         <ol className="space-y-2 pl-1">
           <li className="flex items-start gap-3">
             <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">1</span>
-            <span><strong>Domain expertise</strong> — Understanding how a retail/e-commerce CSM actually diagnoses vendor performance and translates metrics into action.</span>
+            <span><strong>Domain expertise</strong> — Understanding how a retail/e-commerce CSM actually diagnoses vendor performance, correlates cross-metric signals, and translates analysis into vendor-ready communication.</span>
           </li>
           <li className="flex items-start gap-3">
             <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">2</span>
-            <span><strong>Workflow design</strong> — Ability to design tools that support judgment, prioritization, and communication — not just dashboard viewing.</span>
+            <span><strong>Workflow design</strong> — Ability to design tools that support judgment, prioritization, and communication through interactive exploration and scenario modeling — not just dashboard viewing.</span>
           </li>
           <li className="flex items-start gap-3">
             <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">3</span>
-            <span><strong>AI judgment</strong> — Practical instincts for where AI can improve speed and clarity in a customer-facing operational role, with appropriate grounding and explainability.</span>
+            <span><strong>AI judgment</strong> — Practical instincts for where AI adds value in a customer-facing operational role: grounded analysis over generative speculation, transparency through explainability, and clear boundaries between automation and human decision-making.</span>
           </li>
         </ol>
         <p className="text-muted-foreground text-xs mt-2">
